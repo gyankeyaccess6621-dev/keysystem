@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>
+LOGIN
+</title>
+
+<style>
+
+body{
+background:#0f0f0f;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+color:white;
+}
+
+.box{
+width:350px;
+background:#171717;
+padding:30px;
+border-radius:15px;
+box-shadow:0 0 30px rgba(0,0,0,0.5);
+}
+
+input{
+width:100%;
+padding:15px;
+margin-top:10px;
+background:#111;
+border:none;
+outline:none;
+color:white;
+border-radius:10px;
+}
+
+button{
+width:100%;
+padding:15px;
+margin-top:15px;
+border:none;
+border-radius:10px;
+background:#ff0033;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+h1{
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>
+OWNER LOGIN
+</h1>
+
+<input
+id="username"
+placeholder="USERNAME"
+>
+
+<input
+id="password"
+type="password"
+placeholder="PASSWORD"
+>
+
+<button onclick="login()">
+LOGIN
+</button>
+
+</div>
+
+<script>
+
+async function login()
+{
+    let response =
+    await fetch('/login', {
+
+        method:'POST',
+
+        headers:{
+            'Content-Type':'application/json'
+        },
+
+        body:JSON.stringify({
+
+            username:
+            username.value,
+
+            password:
+            password.value
+
+        })
+    });
+
+    let data =
+    await response.json();
+
+    if(data.status == 'success')
+    {
+        localStorage.setItem(
+            'role',
+            data.role
+        );
+
+        localStorage.setItem(
+            'username',
+            data.username
+        );
+
+        location.href =
+        '/dashboard.html';
+    }
+    else
+    {
+        alert('INVALID LOGIN');
+    }
+}
+
+</script>
+
+</body>
+</html>
