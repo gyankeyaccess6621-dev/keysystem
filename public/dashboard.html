@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>
+DASHBOARD
+</title>
+
+<style>
+
+body{
+background:#0f0f0f;
+font-family:Arial;
+margin:0;
+padding:20px;
+color:white;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.card{
+background:#171717;
+padding:20px;
+border-radius:15px;
+margin-top:20px;
+}
+
+input{
+width:100%;
+padding:15px;
+margin-top:10px;
+background:#111;
+border:none;
+outline:none;
+color:white;
+border-radius:10px;
+}
+
+button{
+padding:15px;
+margin-top:15px;
+border:none;
+border-radius:10px;
+background:#ff0033;
+color:white;
+cursor:pointer;
+}
+
+.keybox{
+margin-top:15px;
+padding:15px;
+background:#111;
+border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="top">
+
+<h1>
+OWNER PANEL
+</h1>
+
+<button onclick="logout()">
+LOGOUT
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>
+CREATE APP
+</h2>
+
+<input
+id="appname"
+placeholder="APP NAME"
+>
+
+<button onclick="createApp()">
+CREATE APP
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>
+GENERATE KEY
+</h2>
+
+<input
+id="genuser"
+placeholder="USERNAME"
+>
+
+<input
+id="expiry"
+placeholder="2026-12-31"
+>
+
+<button onclick="generateKey()">
+GENERATE KEY
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>
+ALL KEYS
+</h2>
+
+<div id="keys"></div>
+
+</div>
+
+<script>
+
+if(
+!localStorage.getItem('role')
+)
+{
+location.href='/';
+}
+
+function logout()
+{
+localStorage.clear();
+location.href='/';
+}
+
+async function createApp()
+{
+await fetch('/create-app', {
+
+method:'POST',
+
+headers:{
+'Content-Type':'application/json'
+},
+
+body:JSON.stringify({
+
+appname:
+appname.value
+
+})
+
+});
+
+alert('APP CREATED');
+}
+
+async function generateKey()
+{
+let response =
+await fetch('/generate-key', {
+
+method:'POST',
+
+headers:{
+'Content-Type':'application/json'
+},
+
+body:JSON.stringify({
+
+username:
+genuser.value,
+
+type:'user',
+
+apps:['APP1'],
+
+expiry:
+expiry.value
+
+})
+
+});
+
+let data =
+await response.json();
+
+alert(
+'KEY: ' + data.key
+);
+
+loadKeys();
+}
+
+async function loadKeys()
+{
+let response =
+await fetch('/keys');
+
+let data =
+await response.json();
+
+keys.innerHTML='';
+
+data.forEach(k => {
+
+keys.innerHTML += `
+
+<div class="keybox">
+
+<b>USER:</b>
+${k.username}
+<br><br>
+
+<b>KEY:</b>
+${k.key}
+<br><br>
+
+<b>EXPIRY:</b>
+${k.expiry}
+<br><br>
+
+<b>TYPE:</b>
+${k.type}
+
+</div>
+
+`;
+
+});
+}
+
+loadKeys();
+
+</script>
+
+</body>
+</html>
