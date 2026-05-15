@@ -1,0 +1,36 @@
+Options -Indexes
+
+ServerSignature Off
+
+<FilesMatch "\.(json|txt|log)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+
+<Files "config.php">
+Order Allow,Deny
+Deny from all
+</Files>
+
+RewriteEngine On
+
+RewriteCond %{REQUEST_METHOD} ^(TRACE|DELETE|TRACK) [NC]
+RewriteRule .* - [F]
+
+<IfModule mod_headers.c>
+
+Header set X-Frame-Options "SAMEORIGIN"
+
+Header set X-XSS-Protection "1; mode=block"
+
+Header set X-Content-Type-Options "nosniff"
+
+Header set Referrer-Policy "strict-origin"
+
+Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+</IfModule>
+
+ErrorDocument 403 "ACCESS DENIED"
+
+ErrorDocument 404 "NOT FOUND"
